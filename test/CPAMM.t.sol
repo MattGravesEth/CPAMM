@@ -30,7 +30,6 @@ contract CPAMMTest is Test {
         assertEq(address(cpamm.token1()), address(token1), "token1 not set correctly");
     }
 
-
     // --- Test addLiquidity ---
 
     function test_addInitialLiquidity() public {
@@ -128,7 +127,5 @@ contract CPAMMTest is Test {
 
     // --- Test Reverts ---
 
-    function test_revert_swap() public {
-        
-    }
+    function test_revert_swap() public {}
 }

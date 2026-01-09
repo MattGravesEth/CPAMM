@@ -67,7 +67,7 @@ contract CPAMM {
         require(_tokenIn == address(token0) || _tokenIn == address(token1), "Invalid token");
         require(_amountIn > 0, "Amount in must be positive");
 
-        (IERC20 tokenIn, IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) = 
+        (IERC20 tokenIn, IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) =
             (_tokenIn == address(token0)) ? (token0, token1, reserve0, reserve1) : (token1, token0, reserve1, reserve0);
 
         // Transfer input tokens from user to the contract

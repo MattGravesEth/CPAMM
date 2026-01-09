@@ -17,13 +17,15 @@ contract DeployCPAMM is Script {
         // Check the chain ID to determine which network we are on
         uint256 chainId = block.chainid;
 
-        if (chainId == 11155111) { // Sepolia testnet
+        if (chainId == 11155111) {
+            // Sepolia testnet
             console.log("Deploying to Sepolia...");
             token0Address = vm.envAddress("SEPOLIA_TOKEN0_ADDRESS");
             token1Address = vm.envAddress("SEPOLIA_TOKEN1_ADDRESS");
             require(token0Address != address(0), "SEPOLIA_TOKEN0_ADDRESS not set");
             require(token1Address != address(0), "SEPOLIA_TOKEN1_ADDRESS not set");
-        } else { // Assume local network (Anvil, Hardhat, etc.)
+        } else {
+            // Assume local network (Anvil, Hardhat, etc.)
             console.log("Deploying to local network...");
             // On a local network, deploy mock tokens first
             vm.startBroadcast();
