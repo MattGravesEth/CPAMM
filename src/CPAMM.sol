@@ -38,37 +38,24 @@ contract CPAMM is ERC20 {
      * @param _deadline The timestamp after which the transaction will revert.
      * @return amountOut The amount of the other token received.
      */
-    function swap(
-        address _tokenIn,
-        uint256 _amountIn,
-        uint256 _minAmountOut,
-        uint256 _deadline
-    ) public returns (uint256 amountOut) {
+    function swap(address _tokenIn, uint256 _amountIn, uint256 _minAmountOut, uint256 _deadline)
+        public
+        returns (uint256 amountOut)
+    {
         require(block.timestamp <= _deadline, "Transaction expired");
-        require(
-            _tokenIn == address(token0) || _tokenIn == address(token1),
-            "Invalid token"
-        );
+        require(_tokenIn == address(token0) || _tokenIn == address(token1), "Invalid token");
         require(_amountIn > 0, "Amount in must be positive");
 
         bool isToken0 = _tokenIn == address(token0);
-        (
-            IERC20 tokenIn,
-            IERC20 tokenOut,
-            uint256 reserveIn,
-            uint256 reserveOut
-        ) = isToken0
-                ? (token0, token1, reserve0, reserve1)
-                : (token1, token0, reserve1, reserve0);
+        (IERC20 tokenIn, IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) =
+            isToken0 ? (token0, token1, reserve0, reserve1) : (token1, token0, reserve1, reserve0);
 
         // Transfer input tokens from user to the contract
         tokenIn.transferFrom(msg.sender, address(this), _amountIn);
 
         // Calculate output amount based on constant product formula (with a 0.3% fee)
         uint256 amountInWithFee = _amountIn * FEE_NUMERATOR;
-        amountOut =
-            (reserveOut * amountInWithFee) /
-            (reserveIn * FEE_DENOMINATOR + amountInWithFee);
+        amountOut = (reserveOut * amountInWithFee) / (reserveIn * FEE_DENOMINATOR + amountInWithFee);
 
         require(amountOut >= _minAmountOut, "Insufficient output amount");
 
@@ -91,10 +78,7 @@ contract CPAMM is ERC20 {
      * @param _amount1 The amount of token1 to add.
      * @return shares The amount of LP tokens minted.
      */
-    function addLiquidity(
-        uint256 _amount0,
-        uint256 _amount1
-    ) public returns (uint256 shares) {
+    function addLiquidity(uint256 _amount0, uint256 _amount1) public returns (uint256 shares) {
         // Pull tokens in (Interactions)
         token0.transferFrom(msg.sender, address(this), _amount0);
         token1.transferFrom(msg.sender, address(this), _amount1);
@@ -123,9 +107,7 @@ contract CPAMM is ERC20 {
      * @return amount0 The amount of token0 received.
      * @return amount1 The amount of token1 received.
      */
-    function removeLiquidity(
-        uint256 _shares
-    ) public returns (uint256 amount0, uint256 amount1) {
+    function removeLiquidity(uint256 _shares) public returns (uint256 amount0, uint256 amount1) {
         require(_shares > 0, "Shares must be positive");
         require(balanceOf(msg.sender) >= _shares, "Insufficient LP tokens");
 
