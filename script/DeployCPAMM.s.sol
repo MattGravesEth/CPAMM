@@ -24,6 +24,20 @@ contract DeployCPAMM is Script {
             token1Address = vm.envAddress("SEPOLIA_TOKEN1_ADDRESS");
             require(token0Address != address(0), "SEPOLIA_TOKEN0_ADDRESS not set");
             require(token1Address != address(0), "SEPOLIA_TOKEN1_ADDRESS not set");
+        } else if (chainId == 8453) {
+            // Base Mainnet
+            console.log("Deploying to Base Mainnet...");
+            token0Address = vm.envAddress("BASE_TOKEN0_ADDRESS");
+            token1Address = vm.envAddress("BASE_TOKEN1_ADDRESS");
+            require(token0Address != address(0), "BASE_TOKEN0_ADDRESS not set");
+            require(token1Address != address(0), "BASE_TOKEN1_ADDRESS not set");
+        } else if (chainId == 84532) {
+            // Base Sepolia
+            console.log("Deploying to Base Sepolia...");
+            token0Address = vm.envAddress("BASE_SEPOLIA_TOKEN0_ADDRESS");
+            token1Address = vm.envAddress("BASE_SEPOLIA_TOKEN1_ADDRESS");
+            require(token0Address != address(0), "BASE_SEPOLIA_TOKEN0_ADDRESS not set");
+            require(token1Address != address(0), "BASE_SEPOLIA_TOKEN1_ADDRESS not set");
         } else {
             // Assume local network (Anvil, Hardhat, etc.)
             console.log("Deploying to local network...");
