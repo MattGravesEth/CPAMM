@@ -26,16 +26,8 @@ contract CPAMMTest is Test {
 
     // --- Test constructor ---
     function test_constructor_setsTokens() public view {
-        assertEq(
-            address(cpamm.token0()),
-            address(token0),
-            "token0 not set correctly"
-        );
-        assertEq(
-            address(cpamm.token1()),
-            address(token1),
-            "token1 not set correctly"
-        );
+        assertEq(address(cpamm.token0()), address(token0), "token0 not set correctly");
+        assertEq(address(cpamm.token1()), address(token1), "token1 not set correctly");
     }
 
     // --- Test addLiquidity ---
@@ -55,21 +47,9 @@ contract CPAMMTest is Test {
 
         // Check shares minted
         // 1000 shares are permanently locked, so user gets 100 ether - 1000
-        assertEq(
-            shares,
-            100 ether - 1000,
-            "Initial shares should be 100 ether - 1000"
-        );
-        assertEq(
-            cpamm.balanceOf(USER),
-            100 ether - 1000,
-            "User LP balance should be 100 ether - 1000"
-        );
-        assertEq(
-            cpamm.totalSupply(),
-            100 ether,
-            "Total LP supply should be 100 ether"
-        );
+        assertEq(shares, 100 ether - 1000, "Initial shares should be 100 ether - 1000");
+        assertEq(cpamm.balanceOf(USER), 100 ether - 1000, "User LP balance should be 100 ether - 1000");
+        assertEq(cpamm.totalSupply(), 100 ether, "Total LP supply should be 100 ether");
 
         // Check reserves
         assertEq(cpamm.reserve0(), amount0, "Reserve0 should match amount0");
@@ -100,16 +80,8 @@ contract CPAMMTest is Test {
         // Check shares minted (proportional to existing liquidity)
         // Initial: 50 T0 for 100 LP. New: 25 T0. Expected shares: (25 * 100) / 50 = 50
         assertEq(shares, 50 ether, "Shares should be proportional");
-        assertEq(
-            cpamm.balanceOf(USER),
-            150 ether - 1000,
-            "User total LP balance should be updated"
-        );
-        assertEq(
-            cpamm.totalSupply(),
-            150 ether,
-            "Total LP supply should be updated"
-        );
+        assertEq(cpamm.balanceOf(USER), 150 ether - 1000, "User total LP balance should be updated");
+        assertEq(cpamm.totalSupply(), 150 ether, "Total LP supply should be updated");
 
         // Check reserves
         assertEq(cpamm.reserve0(), 75 ether, "Reserve0 should be updated");
@@ -148,21 +120,13 @@ contract CPAMMTest is Test {
         vm.startPrank(USER);
         token0.approve(address(cpamm), amountIn);
 
-        uint256 amountOut = cpamm.swap(
-            address(token0),
-            amountIn,
-            0,
-            block.timestamp
-        );
+        uint256 amountOut = cpamm.swap(address(token0), amountIn, 0, block.timestamp);
         vm.stopPrank();
 
         // Check balances after swap
         assertEq(token0.balanceOf(address(cpamm)), 60 ether); // 50 + 10
         assertTrue(token1.balanceOf(address(cpamm)) < 50 ether);
-        assertEq(
-            token1.balanceOf(USER),
-            USER_INITIAL_BALANCE - 50 ether + amountOut
-        );
+        assertEq(token1.balanceOf(USER), USER_INITIAL_BALANCE - 50 ether + amountOut);
 
         // Check reserves are updated
         assertEq(cpamm.reserve0(), 60 ether);
@@ -177,21 +141,13 @@ contract CPAMMTest is Test {
         vm.startPrank(USER);
         token1.approve(address(cpamm), amountIn);
 
-        uint256 amountOut = cpamm.swap(
-            address(token1),
-            amountIn,
-            0,
-            block.timestamp
-        );
+        uint256 amountOut = cpamm.swap(address(token1), amountIn, 0, block.timestamp);
         vm.stopPrank();
 
         // Check balances after swap
         assertEq(token1.balanceOf(address(cpamm)), 60 ether); // 50 + 10
         assertTrue(token0.balanceOf(address(cpamm)) < 50 ether);
-        assertEq(
-            token0.balanceOf(USER),
-            USER_INITIAL_BALANCE - 50 ether + amountOut
-        );
+        assertEq(token0.balanceOf(USER), USER_INITIAL_BALANCE - 50 ether + amountOut);
     }
 
     function test_swapAndAddLiquidity_token0Surplus() public {
@@ -210,19 +166,11 @@ contract CPAMMTest is Test {
         token1.approve(address(cpamm), amount1);
 
         uint256 prevShares = cpamm.balanceOf(USER);
-        uint256 shares = cpamm.swapAndAddLiquidity(
-            amount0,
-            amount1,
-            0,
-            block.timestamp
-        );
+        uint256 shares = cpamm.swapAndAddLiquidity(amount0, amount1, 0, block.timestamp);
         vm.stopPrank();
 
         assertTrue(shares > 0, "Should mint shares");
-        assertTrue(
-            cpamm.balanceOf(USER) > prevShares,
-            "Balance should increase"
-        );
+        assertTrue(cpamm.balanceOf(USER) > prevShares, "Balance should increase");
 
         // Reserves will shift due to the large swap, so they won't be 1:1.
         uint256 r0 = cpamm.reserve0();
